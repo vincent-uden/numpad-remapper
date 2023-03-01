@@ -253,7 +253,7 @@ const KeyPadBtn: Component<BtnProps> = ({ key, rows, cols }) => {
           editing()
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
-        } flex items-center justify-center bg-black/20 transition-opacity`}
+        } flex items-center justify-center bg-black/20 transition-opacity z-30`}
         onMouseDown={() => setEditing((e) => !e)}
       >
         <div
@@ -301,7 +301,7 @@ const ExportPopup: Component<ExportPopupProps> = ({ open, setOpen }) => {
         open()
           ? "pointer-events-auto opacity-100"
           : "pointer-events-none opacity-0"
-      } flex items-center justify-center bg-black/20 transition-opacity`}
+      } flex items-center justify-center bg-black/20 transition-opacity z-30`}
       onMouseDown={() => setOpen((e) => !e)}
     >
       <div
