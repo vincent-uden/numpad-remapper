@@ -8,6 +8,8 @@ import {
   useContext,
 } from "solid-js";
 
+import githubImg from "./img/github.png";
+
 type BindingSetup = {
   esc: string;
   tab: string;
@@ -159,53 +161,64 @@ const App: Component = () => {
 
   return (
     <>
-      <div class="h-32" />
-      <div class="flex w-full flex-row items-center justify-center">
-        <BindingsProvider>
-          <div class="max-w-50vw max-h-90vh grid grid-cols-4 grid-rows-6 gap-4">
-            <KeyPadBtn key={"esc"} rows={1} cols={1} />
-            <KeyPadBtn key={"tab"} rows={1} cols={1} />
-            <KeyPadBtn key={"backspace"} rows={1} cols={1} />
-            <KeyPadBtn key={"fn"} rows={1} cols={1} />
-            <KeyPadBtn key={"numLock"} rows={1} cols={1} />
-            <KeyPadBtn key={"slash"} rows={1} cols={1} />
-            <KeyPadBtn key={"star"} rows={1} cols={1} />
-            <KeyPadBtn key={"minus"} rows={1} cols={1} />
-            <KeyPadBtn key={"seven"} rows={1} cols={1} />
-            <KeyPadBtn key={"eight"} rows={1} cols={1} />
-            <KeyPadBtn key={"nine"} rows={1} cols={1} />
-            <KeyPadBtn key={"plus"} rows={2} cols={1} />
-            <KeyPadBtn key={"four"} rows={1} cols={1} />
-            <KeyPadBtn key={"five"} rows={1} cols={1} />
-            <KeyPadBtn key={"six"} rows={1} cols={1} />
-            <KeyPadBtn key={"one"} rows={1} cols={1} />
-            <KeyPadBtn key={"two"} rows={1} cols={1} />
-            <KeyPadBtn key={"three"} rows={1} cols={1} />
-            <KeyPadBtn key={"enter"} rows={2} cols={1} />
-            <KeyPadBtn key={"zero"} rows={1} cols={2} />
-            <KeyPadBtn key={"dot"} rows={1} cols={1} />
-          </div>
+      <div class="relative overflow-x-hidden min-h-screen">
+        <div class="h-8" />
+        <div class="flex w-full flex-col items-center justify-center md:flex-row">
+          <BindingsProvider>
+            <div class="max-w-100 max-h-170 grid grid-cols-4 grid-rows-6 gap-4">
+              <KeyPadBtn key={"esc"} rows={1} cols={1} />
+              <KeyPadBtn key={"tab"} rows={1} cols={1} />
+              <KeyPadBtn key={"backspace"} rows={1} cols={1} />
+              <KeyPadBtn key={"fn"} rows={1} cols={1} />
+              <KeyPadBtn key={"numLock"} rows={1} cols={1} />
+              <KeyPadBtn key={"slash"} rows={1} cols={1} />
+              <KeyPadBtn key={"star"} rows={1} cols={1} />
+              <KeyPadBtn key={"minus"} rows={1} cols={1} />
+              <KeyPadBtn key={"seven"} rows={1} cols={1} />
+              <KeyPadBtn key={"eight"} rows={1} cols={1} />
+              <KeyPadBtn key={"nine"} rows={1} cols={1} />
+              <KeyPadBtn key={"plus"} rows={2} cols={1} />
+              <KeyPadBtn key={"four"} rows={1} cols={1} />
+              <KeyPadBtn key={"five"} rows={1} cols={1} />
+              <KeyPadBtn key={"six"} rows={1} cols={1} />
+              <KeyPadBtn key={"one"} rows={1} cols={1} />
+              <KeyPadBtn key={"two"} rows={1} cols={1} />
+              <KeyPadBtn key={"three"} rows={1} cols={1} />
+              <KeyPadBtn key={"enter"} rows={2} cols={1} />
+              <KeyPadBtn key={"zero"} rows={1} cols={2} />
+              <KeyPadBtn key={"dot"} rows={1} cols={1} />
+            </div>
 
-          <aside class="flex h-full flex-col pl-8">
-            <h2
-              class="border-green/20 hover:border-green/50 cursor-pointer select-none rounded-xl border-solid bg-neutral-900 p-4 font-sans font-extralight text-white transition-colors"
-              onClick={() => {
-                setExporting(true);
-              }}
-            >
-              Export
-            </h2>
-          </aside>
+            <aside class="flex h-full flex-col p-0 md:pl-8">
+              <h2
+                class="border-green/20 hover:border-green/50 cursor-pointer select-none rounded-xl border-solid bg-neutral-900 p-4 font-sans font-extralight text-white transition-colors"
+                onClick={() => {
+                  setExporting(true);
+                }}
+              >
+                Export
+              </h2>
+            </aside>
 
-          <ExportPopup open={exporting} setOpen={setExporting} />
-        </BindingsProvider>
+            <ExportPopup open={exporting} setOpen={setExporting} />
+          </BindingsProvider>
+        </div>
+        <h1 class="font-roboto pointer-events-none relative z-10 mt-16 mb-4 w-full text-center text-6xl font-light text-white">
+          NumPad Remapper
+        </h1>
+        <h2 class="font-roboto pointer-events-none relative z-10 text-center text-xl font-light text-white md:text-3xl">
+          A generator for AHK + AHI
+        </h2>
+        <div class="h-16" />
+        <a class="absolute bottom-10 -right-8" href="https://github.com/vincent-uden/numpad-remapper">
+          <img
+            class="-rotate-30 aspect-square w-60 opacity-50"
+            src={githubImg}
+            alt="github"
+            srcset=""
+          />
+        </a>
       </div>
-      <h1 class="font-roboto mt-16 mb-4 w-full text-center text-6xl font-light text-white">
-        NumPad Remapper
-      </h1>
-      <h2 class="font-roboto w-full text-center text-3xl font-light text-white">
-        A generator for AHK + AHI
-      </h2>
     </>
   );
 };
@@ -225,11 +238,10 @@ const KeyPadBtn: Component<BtnProps> = ({ key, rows, cols }) => {
   return (
     <>
       <div
-        class={`-hover:translate-y-2 whitespace-pre-line break-words rounded-xl border-2 border-solid border-white/20 bg-neutral-900 p-4 font-sans text-xl text-white shadow-xl transition-transform`}
+        class={`-hover:translate-y-2 whitespace-pre-line break-words rounded-xl border-2 border-solid border-white/20 bg-neutral-900 p-4 font-sans text-base text-white shadow-xl transition-transform md:text-xl`}
         style={{
           "grid-column": `span ${cols ?? 1}`,
           "grid-row": `span ${rows ?? 1}`,
-          //"aspect-ratio": rows == 1 && cols == 1 ? "1/1" : "auto",
         }}
         onClick={() => setEditing((e) => !e)}
       >
@@ -267,6 +279,11 @@ const KeyPadBtn: Component<BtnProps> = ({ key, rows, cols }) => {
                 }
                 return current;
               });
+            }}
+            onkeydown={(e) => {
+              if (e.key == "Enter") {
+                setEditing(false);
+              }
             }}
           />
         </div>
