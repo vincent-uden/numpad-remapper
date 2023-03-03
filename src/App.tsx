@@ -32,6 +32,7 @@ type BindingSetup = {
   nine: string;
   zero: string;
   dot: string;
+  device_id: string;
 };
 
 type BtnProps = {
@@ -67,6 +68,7 @@ const defaultBindings: BindingSetup = {
   nine: "9",
   zero: "0",
   dot: ".",
+  device_id: "0x0000, 0x0000",
 };
 
 const keyCodeMapping = {
@@ -129,7 +131,7 @@ SetWorkingDir %A_ScriptDir%
 
 AHI := new AutoHotInterception()
 
-keyboardId := AHI.GetKeyboardId(0x062A, 0x4101)
+keyboardId := AHI.GetKeyboardId(${keyBinding.device_id})
 AHI.SubscribeKeyboard(keyboardId, true, Func("KeyEvent"))
 
 return
@@ -142,7 +144,7 @@ KeyEvent(code, state){`;
     if (state=1) & (code=${keyCodeMapping[key]}) {
         Send {${ahkKey(val)} down}
     }
-    
+
     if (state=0) & (code=${keyCodeMapping[key]}) {
         Send {${ahkKey(val)} up}
     }
@@ -161,7 +163,7 @@ const App: Component = () => {
 
   return (
     <>
-      <div class="relative overflow-x-hidden min-h-screen">
+      <div class="relative min-h-screen overflow-x-hidden">
         <div class="h-8" />
         <div class="flex w-full flex-col items-center justify-center md:flex-row">
           <BindingsProvider>
@@ -190,6 +192,7 @@ const App: Component = () => {
             </div>
 
             <aside class="flex h-full flex-col p-0 md:pl-8">
+              <DeviceIdInput />
               <h2
                 class="border-green/20 hover:border-green/50 cursor-pointer select-none rounded-xl border-solid bg-neutral-900 p-4 font-sans font-extralight text-white transition-colors"
                 onClick={() => {
@@ -198,6 +201,29 @@ const App: Component = () => {
               >
                 Export
               </h2>
+              <div class="rounded-xl border-2 border-solid border-white/20 p-4">
+                <p class="w-50 mt-0 font-sans text-white transition-colors">
+                  Make sure you have{" "}
+                  <a
+                    class="font-extrabold text-white no-underline"
+                    href="https://www.autohotkey.com/"
+                  >
+                    AHK
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    class="font-extrabold text-white no-underline"
+                    href="https://github.com/evilC/AutoHotInterception"
+                  >
+                    AHI
+                  </a>{" "}
+                  installed with AHI placed in the AHK lib directory.
+                </p>
+                <p class="w-50 m-0 font-sans text-white transition-colors">
+                  The device id can be obtained using the Monitor script
+                  included with AHI.
+                </p>
+              </div>
             </aside>
 
             <ExportPopup open={exporting} setOpen={setExporting} />
@@ -210,7 +236,10 @@ const App: Component = () => {
           A generator for AHK + AHI
         </h2>
         <div class="h-16" />
-        <a class="absolute bottom-10 -right-8" href="https://github.com/vincent-uden/numpad-remapper">
+        <a
+          class="absolute bottom-10 -right-8"
+          href="https://github.com/vincent-uden/numpad-remapper"
+        >
           <img
             class="-rotate-30 aspect-square w-60 opacity-50"
             src={githubImg}
@@ -226,6 +255,8 @@ const App: Component = () => {
 const KeyPadBtn: Component<BtnProps> = ({ key, rows, cols }) => {
   const [bindings, setBindings] = useContext(NumPadContext);
   const [editing, setEditing] = createSignal(false);
+
+  let textInp;
 
   const reflowLabel = (text: string): string => {
     const parts = text.split(" ");
@@ -243,7 +274,10 @@ const KeyPadBtn: Component<BtnProps> = ({ key, rows, cols }) => {
           "grid-column": `span ${cols ?? 1}`,
           "grid-row": `span ${rows ?? 1}`,
         }}
-        onClick={() => setEditing((e) => !e)}
+        onClick={() => {
+          setEditing((e) => !e);
+          textInp.focus();
+        }}
       >
         {bindings != null ? reflowLabel(bindings()[key]) : ""}
       </div>
@@ -253,8 +287,10 @@ const KeyPadBtn: Component<BtnProps> = ({ key, rows, cols }) => {
           editing()
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
-        } flex items-center justify-center bg-black/20 transition-opacity z-30`}
-        onMouseDown={() => setEditing((e) => !e)}
+        } z-30 flex items-center justify-center bg-black/20 transition-opacity`}
+        onMouseDown={() => {
+          setEditing((e) => !e);
+        }}
       >
         <div
           class="rounded-xl bg-zinc-700 px-16 py-8 shadow-xl"
@@ -268,6 +304,7 @@ const KeyPadBtn: Component<BtnProps> = ({ key, rows, cols }) => {
             name={`keybind-${key}`}
             id={`keybind-${key}`}
             placeholder={`${defaultBindings[key]}`}
+            ref={textInp}
             class="font-lg border-none bg-zinc-800 py-2 px-2 font-sans text-white shadow-none outline-none"
             onkeyup={(e) => {
               setBindings((current) => {
@@ -301,7 +338,7 @@ const ExportPopup: Component<ExportPopupProps> = ({ open, setOpen }) => {
         open()
           ? "pointer-events-auto opacity-100"
           : "pointer-events-none opacity-0"
-      } flex items-center justify-center bg-black/20 transition-opacity z-30`}
+      } z-30 flex items-center justify-center bg-black/20 transition-opacity`}
       onMouseDown={() => setOpen((e) => !e)}
     >
       <div
@@ -318,9 +355,49 @@ const ExportPopup: Component<ExportPopupProps> = ({ open, setOpen }) => {
   );
 };
 
+const DeviceIdInput: Component = ({}) => {
+  const [bindings, setBindings] = useContext(NumPadContext);
+
+  const deviceIdRegex = /[0-9a-f]x[0-9a-f]{4}, ?[0-9a-f]x[0-9a-f]{4}/i;
+
+  return (
+    <>
+      <label
+        class="font-roboto w-full text-lg font-light text-white"
+        for="device_id"
+      >
+        Numpad Hardware Id
+      </label>
+      <input
+        id="device_id"
+        type="text"
+        name="device_id"
+        class="font-lg border-none bg-zinc-800 py-2 px-2 font-sans text-white shadow-none outline-none"
+        placeholder={defaultBindings.device_id}
+        value={bindings().device_id}
+        onkeyup={(e) => {
+          setBindings((current) => {
+            current.device_id = e.currentTarget.value;
+            return current;
+          });
+        }}
+      />
+      <p
+        class={`font-roboto text-red mb-0 w-40 text-base font-bold ${
+          bindings().device_id.match(deviceIdRegex) && bindings().device_id.length <= 14
+            ? "opacity-0"
+            : "opacity-100"
+        } transition-opacity`}
+      >
+        A device hardware id is of the form "0x0000, 0x0000"
+      </p>
+    </>
+  );
+};
+
 const NumPadContext = createContext<
   [Accessor<BindingSetup>?, Setter<BindingSetup>?]
->([null, null]);
+>(createSignal(Object.assign({}, defaultBindings)));
 
 const BindingsProvider = (props) => {
   const [bindings, setBindings] = createSignal<BindingSetup>(

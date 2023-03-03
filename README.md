@@ -1,34 +1,8 @@
-## Usage
+# What is this?
+There's a think called [AHK](https://www.autohotkey.com/) which lets you remap any key press into whatever you'd like, often another key press. That's great and all, but what if you wanted to remap keys on a secondary keyboard, while leaving the first one unchanged, is that even possible? Yes! Through the magic of [AHI](https://github.com/evilC/AutoHotInterception).
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+Turns out, writing the script file for remapping keys is **very** boring. Even for something as small as a numpad. That's why I made this website. It allows you to type in a single key for each button on a numpad (except Num Lock and Fn for hardware reasons). Then you can export your selected configuration to a `.ahk` script which *should* be plug-and-play.
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
-
-```bash
-$ npm install # or pnpm install or yarn install
-```
-
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm dev` or `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+## Planned features
+- Importing a script generated using this tool, to continue editing where you left off
+- Saving state to local storage
